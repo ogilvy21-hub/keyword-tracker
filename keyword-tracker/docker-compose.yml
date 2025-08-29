@@ -1,0 +1,31 @@
+services:
+  backend:
+    build: ./backend
+    container_name: kt-backend
+    env_file: .env
+    environment:
+      - NAVER_CLIENT_ID=${NAVER_CLIENT_ID}
+      - NAVER_CLIENT_SECRET=${NAVER_CLIENT_SECRET}
+      - PORT=${BACKEND_PORT:-8000}
+    ports:
+      - "${BACKEND_PORT:-8000}:8000"
+    networks:
+      - kt-net
+
+  frontend:
+    build: ./frontend
+    container_name: kt-frontend
+    env_file: .env
+    environment:
+      - NEXT_PUBLIC_BACKEND_URL=http://backend:8000
+      - PORT=${FRONTEND_PORT:-3000}
+    ports:
+      - "${FRONTEND_PORT:-3000}:3000"
+    depends_on:
+      - backend
+    networks:
+      - kt-net
+
+networks:
+  kt-net:
+    driver: bridge
